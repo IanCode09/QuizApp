@@ -4,12 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import com.lexy.truecitizen.databinding.ActivityMainBinding;
 import com.lexy.truecitizen.model.Question;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private int currentQuestionIndex = 0;
+
     private Question[] questionBank = new Question[] {
             //create/instantiate question objects
             new Question(R.string.question_amandments, false),
@@ -28,6 +32,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        binding.questionTextView.setText(questionBank[0].getAnswerResId());
+        binding.questionTextView.setText(questionBank[currentQuestionIndex].getAnswerResId());
+
+        binding.nextButton.setOnClickListener(v -> {
+            currentQuestionIndex = (currentQuestionIndex + 1) % questionBank.length;
+            updateQuestion();
+        });
+
+        binding.prevButton.setOnClickListener(v -> {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex = (currentQuestionIndex - 1) % questionBank.length;
+                updateQuestion();
+            }
+        });
+    }
+
+    private void updateQuestion() {
+        binding.questionTextView.setText(questionBank[currentQuestionIndex].getAnswerResId());
     }
 }
