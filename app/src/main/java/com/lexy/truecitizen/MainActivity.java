@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.lexy.truecitizen.databinding.ActivityMainBinding;
 import com.lexy.truecitizen.model.Question;
 
@@ -34,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
 
         binding.questionTextView.setText(questionBank[currentQuestionIndex].getAnswerResId());
 
+        binding.trueButton.setOnClickListener(v -> {
+            checkAnswer(true);
+        });
+
+        binding.falseButton.setOnClickListener(v -> {
+           checkAnswer(false);
+        });
+
         binding.nextButton.setOnClickListener(v -> {
             currentQuestionIndex = (currentQuestionIndex + 1) % questionBank.length;
             updateQuestion();
@@ -45,6 +54,20 @@ public class MainActivity extends AppCompatActivity {
                 updateQuestion();
             }
         });
+    }
+
+    private void checkAnswer(boolean userChooseCorrect) {
+        boolean answerIsCorrect = questionBank[currentQuestionIndex].isAnswerTrue();
+        int messageId;
+
+        if(answerIsCorrect == userChooseCorrect) {
+            messageId = R.string.correct_answer;
+        } else {
+            messageId = R.string.wrong_answer;
+        }
+
+        Snackbar.make(binding.imageView, messageId, Snackbar.LENGTH_SHORT)
+                .show();
     }
 
     private void updateQuestion() {
